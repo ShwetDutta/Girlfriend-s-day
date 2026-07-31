@@ -164,7 +164,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "That Bright Smile",
       date: "Memory #1",
       caption: "You don't even have to try—you somehow manage to look effortlessly adorable without even realizing it. I could look at this picture all day.",
-      imageUrl: photo1,
+      imageUrl: "public/photos/1000071188.jpg",
       rotation: -3,
       frameStyle: "polaroid",
       tapeColor: "pink",
