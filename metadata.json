@@ -1,0 +1,6 @@
+{
+  "name": "A Digital Love Letter",
+  "description": "An award-winning, highly interactive single-page romantic love letter and scrapbook experience for National Girlfriend's Day.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
