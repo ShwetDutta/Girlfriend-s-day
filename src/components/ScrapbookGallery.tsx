@@ -137,13 +137,6 @@ export const ScrapbookGallery: React.FC<ScrapbookGalleryProps> = ({ memories }) 
                       alt={item.title}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
-                      onError={(e) => {
-                        const filename = item.imageUrl.split('/').pop();
-                        if (filename && !e.currentTarget.dataset.fallback) {
-                          e.currentTarget.dataset.fallback = 'true';
-                          e.currentTarget.src = `/photos/${filename}`;
-                        }
-                      }}
                     />
                     
                     {/* Hover Overlay Icon */}
@@ -260,13 +253,6 @@ export const ScrapbookGallery: React.FC<ScrapbookGalleryProps> = ({ memories }) 
                   src={activeMemory.imageUrl}
                   alt={activeMemory.title}
                   className="w-full h-full object-contain max-h-[55vh]"
-                  onError={(e) => {
-                    const filename = activeMemory.imageUrl.split('/').pop();
-                    if (filename && !e.currentTarget.dataset.fallback) {
-                      e.currentTarget.dataset.fallback = 'true';
-                      e.currentTarget.src = `/photos/${filename}`;
-                    }
-                  }}
                 />
               </div>
 

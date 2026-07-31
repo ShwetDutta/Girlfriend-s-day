@@ -1,11 +1,21 @@
 
 
-const photoModules = import.meta.glob('../assets/photos/*.jpg', { eager: true, import: 'default' }) as Record<string, string>;
-
-export const getPhotoUrl = (filename: string): string => {
-  const key = `../assets/photos/${filename}`;
-  return photoModules[key] || `/photos/${filename}`;
-};
+import photo1 from '../assets/photos/1000071188.jpg';
+import photo2 from '../assets/photos/1000071189.jpg';
+import photo3 from '../assets/photos/1000071190.jpg';
+import photo4 from '../assets/photos/1000071191.jpg';
+import photo5 from '../assets/photos/1000071192.jpg';
+import photo6 from '../assets/photos/1000071193.jpg';
+import photo7 from '../assets/photos/1000071194.jpg';
+import photo8 from '../assets/photos/1000071195.jpg';
+import photo9 from '../assets/photos/1000071196.jpg';
+import photo10 from '../assets/photos/1000071197.jpg';
+import photo11 from '../assets/photos/1000071198.jpg';
+import photo12 from '../assets/photos/1000071201.jpg';
+import photo13 from '../assets/photos/1000071202.jpg';
+import photo14 from '../assets/photos/1000071203.jpg';
+import photo15 from '../assets/photos/1000071204.jpg';
+import photo16 from '../assets/photos/1000071205.jpg';
 
 export interface Milestone {
   id: string;
@@ -156,7 +166,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "That Bright Smile",
       date: "Memory #1",
       caption: "You don't even have to try—you somehow manage to look effortlessly adorable without even realizing it. I could look at this picture all day.",
-      imageUrl: getPhotoUrl("1000071188.jpg"),
+      imageUrl: photo1,
       rotation: -3,
       frameStyle: "polaroid",
       tapeColor: "pink",
@@ -169,7 +179,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Caught Off Guard",
       date: "Memory #2",
       caption: "I still laugh every time I see this one. You somehow managed to look both completely surprised and absurdly cute at the exact same time.",
-      imageUrl: getPhotoUrl("1000071189.jpg"),
+      imageUrl: photo2,
       rotation: 2,
       frameStyle: "torn-paper",
       tapeColor: "rose",
@@ -182,7 +192,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "My Favorite View",
       date: "Memory #3",
       caption: "I took this while you weren't paying attention, and it turned out to be one of my absolute favorites. You look so soft and calm here.",
-      imageUrl: getPhotoUrl("1000071190.jpg"),
+      imageUrl: photo3,
       rotation: -2,
       frameStyle: "pressed-flower",
       tapeColor: "lavender",
@@ -195,7 +205,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "The Cutest Look",
       date: "Memory #4",
       caption: "I don't know if you realize it, but you have the most endearing expressions when you're thinking about something. I love every little detail of this.",
-      imageUrl: getPhotoUrl("1000071191.jpg"),
+      imageUrl: photo4,
       rotation: 3,
       frameStyle: "film",
       tapeColor: "gold",
@@ -208,7 +218,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Little Drama Queen",
       date: "Memory #5",
       caption: "This expression deserves its own art museum. Only you can pull off a silly pose and still look irresistibly charming.",
-      imageUrl: getPhotoUrl("1000071192.jpg"),
+      imageUrl: photo5,
       rotation: -4,
       frameStyle: "vintage-border",
       tapeColor: "mint",
@@ -221,7 +231,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Pure Joy",
       date: "Memory #6",
       caption: "This is one of those pictures that instantly makes my day better. Look at how bright your laugh is here—it's impossible not to smile back.",
-      imageUrl: getPhotoUrl("1000071193.jpg"),
+      imageUrl: photo6,
       rotation: 2,
       frameStyle: "polaroid",
       tapeColor: "pink",
@@ -234,7 +244,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Those Pretty Eyes",
       date: "Memory #7",
       caption: "There's a gentle kind of magic in this picture. This is exactly how I see you every single day—sweet, glowing, and utterly breathtaking.",
-      imageUrl: getPhotoUrl("1000071194.jpg"),
+      imageUrl: photo7,
       rotation: -1,
       frameStyle: "pressed-flower",
       tapeColor: "rose",
@@ -247,7 +257,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Silly & Sweet",
       date: "Memory #8",
       caption: "I don't even remember what we were laughing about here, but I remember how happy I felt just being right there beside you.",
-      imageUrl: getPhotoUrl("1000071195.jpg"),
+      imageUrl: photo8,
       rotation: 4,
       frameStyle: "torn-paper",
       tapeColor: "lavender",
@@ -260,7 +270,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "My Sunshine",
       date: "Memory #9",
       caption: "You have this unbelievable way of lighting up the entire room without even saying a word. This picture captures that energy perfectly.",
-      imageUrl: getPhotoUrl("1000071196.jpg"),
+      imageUrl: photo9,
       rotation: -3,
       frameStyle: "vintage-border",
       tapeColor: "gold",
@@ -273,7 +283,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Always Adorable",
       date: "Memory #10",
       caption: "You've always had the sweetest smile, and I hope you never stop smiling like this. Seeing you happy is my favorite feeling in the world.",
-      imageUrl: getPhotoUrl("1000071197.jpg"),
+      imageUrl: photo10,
       rotation: 2,
       frameStyle: "polaroid",
       tapeColor: "mint",
@@ -286,7 +296,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "A Candid Moment",
       date: "Memory #11",
       caption: "You didn't know I was taking a picture, which makes it ten times better. Unscripted, natural, and genuinely pretty.",
-      imageUrl: getPhotoUrl("1000071198.jpg"),
+      imageUrl: photo11,
       rotation: -2,
       frameStyle: "film",
       tapeColor: "pink",
@@ -299,7 +309,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "My Pretty Girl",
       date: "Memory #12",
       caption: "I randomly opened my gallery the other day and paused at this exact photo. You look so effortlessly beautiful here, Hafsa.",
-      imageUrl: getPhotoUrl("1000071201.jpg"),
+      imageUrl: photo12,
       rotation: 3,
       frameStyle: "pressed-flower",
       tapeColor: "rose",
@@ -312,7 +322,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Master of Goofy Faces",
       date: "Memory #13",
       caption: "I don't know what was happening here... but I love it. Never lose this goofy side of yours, it's one of my favorite things about you.",
-      imageUrl: getPhotoUrl("1000071202.jpg"),
+      imageUrl: photo13,
       rotation: -3,
       frameStyle: "vintage-border",
       tapeColor: "lavender",
@@ -325,7 +335,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Just You Being You",
       date: "Memory #14",
       caption: "No poses, no filters—just you being your sweet, cozy self. This picture reminds me why I fell for you in the first place.",
-      imageUrl: getPhotoUrl("1000071203.jpg"),
+      imageUrl: photo14,
       rotation: 2,
       frameStyle: "polaroid",
       tapeColor: "gold",
@@ -338,7 +348,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Side By Side",
       date: "Memory #15",
       caption: "My favorite picture isn't the most formal or polished one... it's simply the one where I'm lucky enough to be standing right beside you.",
-      imageUrl: getPhotoUrl("1000071204.jpg"),
+      imageUrl: photo15,
       rotation: -2,
       frameStyle: "torn-paper",
       tapeColor: "pink",
@@ -351,7 +361,7 @@ export const initialLoveStory: LoveStoryConfig = {
       title: "Happy Girlfriend's Day",
       date: "Memory #16",
       caption: "Out of all the memories in my phone, you are my absolute favorite story. I love you today, tomorrow, and every day after that, Hafsa.",
-      imageUrl: getPhotoUrl("1000071205.jpg"),
+      imageUrl: photo16,
       rotation: 1,
       frameStyle: "pressed-flower",
       tapeColor: "rose",
