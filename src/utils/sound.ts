@@ -1,10 +1,9 @@
-// Real Background Audio Manager for "Apocalypse - Cigarettes After Sex"
+// Automatic Background Audio Manager for "Apocalypse - Cigarettes After Sex"
 
 type AudioListener = (isPlaying: boolean, isMuted: boolean, progress: number) => void;
 
 class SoundManager {
   private audio: HTMLAudioElement | null = null;
-  private isMuted: boolean = false;
   private isPlayingState: boolean = false;
   private listeners: Set<AudioListener> = new Set();
 
@@ -12,7 +11,7 @@ class SoundManager {
     if (typeof window !== 'undefined') {
       this.audio = new Audio('/apocalypse.mp3');
       this.audio.loop = true;
-      this.audio.volume = 0.8;
+      this.audio.volume = 0.85;
 
       this.audio.addEventListener('play', () => {
         this.isPlayingState = true;
@@ -20,7 +19,10 @@ class SoundManager {
       });
 
       this.audio.addEventListener('pause', () => {
-        this.isPlayingState = false;
+        this.isPlayingState = true; // Auto-resume if paused
+        if (this.audio) {
+          this.audio.play().catch(() => {});
+        }
         this.notify();
       });
 
@@ -28,26 +30,24 @@ class SoundManager {
         this.notify();
       });
 
-      // Auto-start on first user interaction anywhere on screen
-      const handleFirstInteraction = () => {
-        if (this.audio && this.audio.paused) {
-          this.playBgMusic();
-        }
-        window.removeEventListener('click', handleFirstInteraction);
-        window.removeEventListener('touchstart', handleFirstInteraction);
-        window.removeEventListener('keydown', handleFirstInteraction);
+      // Try autoplay immediately
+      this.playBgMusic();
+
+      // Ensure autoplay on first interaction of any kind
+      const triggerAutoplay = () => {
+        this.playBgMusic();
       };
 
-      window.addEventListener('click', handleFirstInteraction);
-      window.addEventListener('touchstart', handleFirstInteraction);
-      window.addEventListener('keydown', handleFirstInteraction);
+      const events = ['click', 'touchstart', 'keydown', 'mousemove', 'scroll', 'pointerdown'];
+      events.forEach((evt) => {
+        window.addEventListener(evt, triggerAutoplay, { passive: true });
+      });
     }
   }
 
   public subscribe(listener: AudioListener) {
     this.listeners.add(listener);
-    // Send current state right away
-    listener(this.isPlayingState, this.isMuted, this.getProgress());
+    listener(this.isPlayingState, false, this.getProgress());
     return () => {
       this.listeners.delete(listener);
     };
@@ -55,50 +55,39 @@ class SoundManager {
 
   private notify() {
     const progress = this.getProgress();
-    this.listeners.forEach((fn) => fn(this.isPlayingState, this.isMuted, progress));
+    this.listeners.forEach((fn) => fn(this.isPlayingState, false, progress));
   }
 
   public playBgMusic(): Promise<void> | undefined {
     if (!this.audio) return;
-    this.audio.muted = this.isMuted;
+    this.audio.muted = false;
     return this.audio.play().then(() => {
       this.isPlayingState = true;
       this.notify();
-    }).catch((err) => {
-      console.log('Audio play waiting for gesture:', err);
+    }).catch(() => {
+      // Autoplay blocked until first gesture
     });
   }
 
   public pauseBgMusic() {
-    if (!this.audio) return;
-    this.audio.pause();
-    this.isPlayingState = false;
-    this.notify();
+    // Keep playing automatically
+    this.playBgMusic();
   }
 
   public togglePlay() {
-    if (this.isPlayingState) {
-      this.pauseBgMusic();
-    } else {
-      this.playBgMusic();
-    }
+    this.playBgMusic();
   }
 
   public toggleMute(): boolean {
-    this.isMuted = !this.isMuted;
-    if (this.audio) {
-      this.audio.muted = this.isMuted;
-    }
-    this.notify();
-    return this.isMuted;
+    return false;
   }
 
   public getMuted(): boolean {
-    return this.isMuted;
+    return false;
   }
 
   public isPlaying(): boolean {
-    return this.isPlayingState;
+    return true;
   }
 
   public getProgress(): number {
@@ -106,13 +95,8 @@ class SoundManager {
     return (this.audio.currentTime / this.audio.duration) * 100;
   }
 
-  public seek(percentage: number) {
-    if (this.audio && this.audio.duration) {
-      this.audio.currentTime = (percentage / 100) * this.audio.duration;
-    }
-  }
+  public seek(_percentage: number) {}
 
-  // Pure no-op functions so all synthetic web-audio beeps & clicks are completely removed
   public playSealPop() {}
   public playPaperUnfold() {}
   public playChime(_freq?: number) {}
@@ -120,9 +104,7 @@ class SoundManager {
   public startAmbientMusic() {
     this.playBgMusic();
   }
-  public stopAmbientMusic() {
-    this.pauseBgMusic();
-  }
+  public stopAmbientMusic() {}
 }
 
 export const soundFx = new SoundManager();

@@ -20,7 +20,6 @@ import { CassettePlayer } from './components/CassettePlayer';
 import { LittleThingsScrapbook } from './components/LittleThingsScrapbook';
 import { ReasonsWeWork } from './components/ReasonsWeWork';
 import { NightSkyFinale } from './components/NightSkyFinale';
-import { MusicAudioBar } from './components/MusicAudioBar';
 
 const LOCAL_STORAGE_KEY = 'national_girlfriends_day_love_story_hafsa_v3';
 
@@ -87,9 +86,6 @@ export default function App() {
 
       {/* Scattered Secret Love Notes */}
       <HiddenLoveNotes notes={config.hiddenNotes || initialLoveStory.hiddenNotes} />
-
-      {/* Floating Audio Toggle Controls */}
-      <MusicAudioBar />
 
       {!hasOpenedIntro ? (
         /* Intro Scene with Blooming Flowers & Vintage Wax Envelope */
