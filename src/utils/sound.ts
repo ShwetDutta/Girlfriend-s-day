@@ -1,27 +1,95 @@
-// Web Audio API sound generator for romantic ambient sounds & interactive FX
+// Real Background Audio Manager for "Apocalypse - Cigarettes After Sex"
+
+type AudioListener = (isPlaying: boolean, isMuted: boolean, progress: number) => void;
 
 class SoundManager {
-  private ctx: AudioContext | null = null;
+  private audio: HTMLAudioElement | null = null;
   private isMuted: boolean = false;
-  private bgOscillators: OscillatorNode[] = [];
-  private bgGain: GainNode | null = null;
-  private isBgPlaying: boolean = false;
+  private isPlayingState: boolean = false;
+  private listeners: Set<AudioListener> = new Set();
 
-  private initCtx() {
-    if (!this.ctx) {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      this.ctx = new AudioCtx();
+  constructor() {
+    if (typeof window !== 'undefined') {
+      this.audio = new Audio('/apocalypse.mp3');
+      this.audio.loop = true;
+      this.audio.volume = 0.8;
+
+      this.audio.addEventListener('play', () => {
+        this.isPlayingState = true;
+        this.notify();
+      });
+
+      this.audio.addEventListener('pause', () => {
+        this.isPlayingState = false;
+        this.notify();
+      });
+
+      this.audio.addEventListener('timeupdate', () => {
+        this.notify();
+      });
+
+      // Auto-start on first user interaction anywhere on screen
+      const handleFirstInteraction = () => {
+        if (this.audio && this.audio.paused) {
+          this.playBgMusic();
+        }
+        window.removeEventListener('click', handleFirstInteraction);
+        window.removeEventListener('touchstart', handleFirstInteraction);
+        window.removeEventListener('keydown', handleFirstInteraction);
+      };
+
+      window.addEventListener('click', handleFirstInteraction);
+      window.addEventListener('touchstart', handleFirstInteraction);
+      window.addEventListener('keydown', handleFirstInteraction);
     }
-    if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+  }
+
+  public subscribe(listener: AudioListener) {
+    this.listeners.add(listener);
+    // Send current state right away
+    listener(this.isPlayingState, this.isMuted, this.getProgress());
+    return () => {
+      this.listeners.delete(listener);
+    };
+  }
+
+  private notify() {
+    const progress = this.getProgress();
+    this.listeners.forEach((fn) => fn(this.isPlayingState, this.isMuted, progress));
+  }
+
+  public playBgMusic(): Promise<void> | undefined {
+    if (!this.audio) return;
+    this.audio.muted = this.isMuted;
+    return this.audio.play().then(() => {
+      this.isPlayingState = true;
+      this.notify();
+    }).catch((err) => {
+      console.log('Audio play waiting for gesture:', err);
+    });
+  }
+
+  public pauseBgMusic() {
+    if (!this.audio) return;
+    this.audio.pause();
+    this.isPlayingState = false;
+    this.notify();
+  }
+
+  public togglePlay() {
+    if (this.isPlayingState) {
+      this.pauseBgMusic();
+    } else {
+      this.playBgMusic();
     }
   }
 
   public toggleMute(): boolean {
     this.isMuted = !this.isMuted;
-    if (this.bgGain && this.ctx) {
-      this.bgGain.gain.setValueAtTime(this.isMuted ? 0 : 0.08, this.ctx.currentTime);
+    if (this.audio) {
+      this.audio.muted = this.isMuted;
     }
+    this.notify();
     return this.isMuted;
   }
 
@@ -29,159 +97,31 @@ class SoundManager {
     return this.isMuted;
   }
 
-  // Wax Seal Snap / Pop
-  public playSealPop() {
-    if (this.isMuted) return;
-    this.initCtx();
-    if (!this.ctx) return;
-
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(180, this.ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.12);
-
-    gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.12);
+  public isPlaying(): boolean {
+    return this.isPlayingState;
   }
 
-  // Paper Rustle / Unfold sound
-  public playPaperUnfold() {
-    if (this.isMuted) return;
-    this.initCtx();
-    if (!this.ctx) return;
+  public getProgress(): number {
+    if (!this.audio || !this.audio.duration) return 0;
+    return (this.audio.currentTime / this.audio.duration) * 100;
+  }
 
-    const bufferSize = this.ctx.sampleRate * 0.25;
-    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.3));
+  public seek(percentage: number) {
+    if (this.audio && this.audio.duration) {
+      this.audio.currentTime = (percentage / 100) * this.audio.duration;
     }
-
-    const noise = this.ctx.createBufferSource();
-    noise.buffer = buffer;
-
-    const filter = this.ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 1200;
-    filter.Q.value = 1.5;
-
-    const gain = this.ctx.createGain();
-    gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.25);
-
-    noise.connect(filter);
-    filter.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    noise.start();
   }
 
-  // Soft Chime / Bell FX
-  public playChime(freq = 523.25) {
-    if (this.isMuted) return;
-    this.initCtx();
-    if (!this.ctx) return;
-
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-
-    gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 1.2);
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    osc.start();
-    osc.stop(this.ctx.currentTime + 1.2);
-  }
-
-  // Light Click
-  public playClick() {
-    if (this.isMuted) return;
-    this.initCtx();
-    if (!this.ctx) return;
-
-    const osc = this.ctx.createOscillator();
-    const gain = this.ctx.createGain();
-
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(440, this.ctx.currentTime);
-
-    gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.04);
-
-    osc.connect(gain);
-    gain.connect(this.ctx.destination);
-
-    osc.start();
-    osc.stop(this.ctx.currentTime + 0.04);
-  }
-
-  // Start Romantic Background Piano Chord Arpeggio Loop
+  // Pure no-op functions so all synthetic web-audio beeps & clicks are completely removed
+  public playSealPop() {}
+  public playPaperUnfold() {}
+  public playChime(_freq?: number) {}
+  public playClick() {}
   public startAmbientMusic() {
-    if (this.isBgPlaying) return;
-    this.initCtx();
-    if (!this.ctx) return;
-
-    this.isBgPlaying = true;
-    this.bgGain = this.ctx.createGain();
-    this.bgGain.gain.setValueAtTime(this.isMuted ? 0 : 0.06, this.ctx.currentTime);
-    this.bgGain.connect(this.ctx.destination);
-
-    // Soft pentatonic chord progression (Fmaj7, Cmaj7, Am7, G6)
-    const notes = [
-      [349.23, 440.00, 523.25, 659.25], // Fmaj7
-      [261.63, 329.63, 392.00, 493.88], // Cmaj7
-      [220.00, 261.63, 329.63, 392.00], // Am7
-      [196.00, 246.94, 293.66, 392.00], // G6
-    ];
-
-    let chordIdx = 0;
-    const playChordCycle = () => {
-      if (!this.isBgPlaying || !this.ctx) return;
-
-      const currentChord = notes[chordIdx];
-      chordIdx = (chordIdx + 1) % notes.length;
-
-      currentChord.forEach((freq, noteIdx) => {
-        if (!this.ctx) return;
-        const osc = this.ctx.createOscillator();
-        const noteGain = this.ctx.createGain();
-
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, this.ctx.currentTime + noteIdx * 0.35);
-
-        noteGain.gain.setValueAtTime(0.001, this.ctx.currentTime + noteIdx * 0.35);
-        noteGain.gain.linearRampToValueAtTime(0.12, this.ctx.currentTime + noteIdx * 0.35 + 0.4);
-        noteGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + noteIdx * 0.35 + 3.8);
-
-        osc.connect(noteGain);
-        if (this.bgGain) noteGain.connect(this.bgGain);
-
-        osc.start(this.ctx.currentTime + noteIdx * 0.35);
-        osc.stop(this.ctx.currentTime + noteIdx * 0.35 + 4.0);
-      });
-
-      setTimeout(playChordCycle, 3800);
-    };
-
-    playChordCycle();
+    this.playBgMusic();
   }
-
   public stopAmbientMusic() {
-    this.isBgPlaying = false;
+    this.pauseBgMusic();
   }
 }
 

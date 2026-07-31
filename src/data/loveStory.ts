@@ -110,14 +110,16 @@ export const initialLoveStory: LoveStoryConfig = {
     signature: "❤️"
   },
   song: {
-    title: "Our Special Melody",
-    artist: "Configurable Song",
+    title: "Apocalypse",
+    artist: "Cigarettes After Sex",
     albumArt: "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&w=600&q=80",
+    audioUrl: "/apocalypse.mp3",
     lyrics: [
-      "When I think of you, ordinary days feel like pure magic...",
-      "Your smile lights up my world in ways words can't describe...",
-      "Every conversation with you makes my heart smile...",
-      "You'll always have a special place in my heart..."
+      "Got your music in your head, don't say a word...",
+      "Your lips, my lips, apocalypse...",
+      "Go and hide your love away...",
+      "Sharing all your secrets with each other...",
+      "When I look at you, my world is at peace..."
     ]
   },
   milestones: [

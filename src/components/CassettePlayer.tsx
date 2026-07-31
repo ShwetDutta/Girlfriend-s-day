@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { soundFx } from '../utils/sound';
-import { Play, Pause, Volume2, VolumeX, Disc, Music, Sparkles } from 'lucide-react';
+import { Play, Pause, Volume2, VolumeX, Disc, Music } from 'lucide-react';
 
 interface CassettePlayerProps {
   songTitle: string;
@@ -16,36 +16,42 @@ export const CassettePlayer: React.FC<CassettePlayerProps> = ({
   albumArt,
   lyrics,
 }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(25);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(soundFx.isPlaying());
+  const [progress, setProgress] = useState(soundFx.getProgress());
+  const [isMuted, setIsMuted] = useState(soundFx.getMuted());
   const [currentLyricIdx, setCurrentLyricIdx] = useState(0);
 
+  useEffect(() => {
+    const unsubscribe = soundFx.subscribe((playing, muted, currentProgress) => {
+      setIsPlaying(playing);
+      setIsMuted(muted);
+      setProgress(currentProgress);
+    });
+    return unsubscribe;
+  }, []);
+
   const togglePlay = () => {
-    soundFx.playClick();
-    if (!isPlaying) {
-      soundFx.startAmbientMusic();
-      setIsPlaying(true);
-    } else {
-      soundFx.stopAmbientMusic();
-      setIsPlaying(false);
-    }
+    soundFx.togglePlay();
   };
 
   const toggleMute = () => {
-    soundFx.playClick();
-    const muted = soundFx.toggleMute();
-    setIsMuted(muted);
+    soundFx.toggleMute();
   };
 
-  // Simulate progress bar and lyrics progression
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const newPercentage = (clickX / rect.width) * 100;
+    soundFx.seek(newPercentage);
+  };
+
+  // Cycle lyrics carousel when music is playing
   useEffect(() => {
     if (!isPlaying) return;
 
     const interval = setInterval(() => {
-      setProgress((prev) => (prev >= 100 ? 0 : prev + 1));
       setCurrentLyricIdx((prev) => (prev + 1) % (lyrics.length || 1));
-    }, 3000);
+    }, 4500);
 
     return () => clearInterval(interval);
   }, [isPlaying, lyrics.length]);
@@ -124,16 +130,20 @@ export const CassettePlayer: React.FC<CassettePlayerProps> = ({
               <h3 className="font-playfair text-2xl font-bold text-[#8C5A66] mt-1 line-clamp-1">
                 {songTitle}
               </h3>
-              <p className="font-cormorant text-lg text-[#8C5A66]/80">
+              <p className="font-cormorant text-lg text-[#8C5A66]/80 font-medium">
                 {artist}
               </p>
             </div>
           </div>
 
           {/* Interactive Progress Bar */}
-          <div className="w-full bg-[#F6E6E8] h-2 rounded-full overflow-hidden mb-6 border border-[#E8B7C0]/40">
+          <div
+            onClick={handleSeek}
+            className="w-full bg-[#F6E6E8] h-2.5 rounded-full overflow-hidden mb-6 border border-[#E8B7C0]/40 cursor-pointer relative"
+            title="Click to seek"
+          >
             <div
-              className="bg-gradient-to-r from-[#E8B7C0] to-[#C77D8A] h-full transition-all duration-500 rounded-full"
+              className="bg-gradient-to-r from-[#E8B7C0] to-[#C77D8A] h-full transition-all duration-300 rounded-full"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -142,7 +152,8 @@ export const CassettePlayer: React.FC<CassettePlayerProps> = ({
           <div className="flex items-center justify-between">
             <button
               onClick={toggleMute}
-              className="p-3 rounded-full bg-[#F6E6E8] hover:bg-[#FADADD] text-[#8C5A66] transition-colors"
+              className="p-3 rounded-full bg-[#F6E6E8] hover:bg-[#FADADD] text-[#8C5A66] transition-colors cursor-pointer"
+              title="Toggle Mute"
             >
               {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
             </button>
@@ -150,13 +161,14 @@ export const CassettePlayer: React.FC<CassettePlayerProps> = ({
             {/* Big Play / Pause Button */}
             <button
               onClick={togglePlay}
-              className="w-16 h-16 rounded-full bg-gradient-to-r from-[#C77D8A] to-[#8C5A66] text-white flex items-center justify-center shadow-lg hover:scale-108 transition-all"
+              className="w-16 h-16 rounded-full bg-gradient-to-r from-[#C77D8A] to-[#8C5A66] text-white flex items-center justify-center shadow-lg hover:scale-105 transition-all cursor-pointer"
+              title={isPlaying ? "Pause Music" : "Play Music"}
             >
               {isPlaying ? <Pause className="w-8 h-8 fill-white" /> : <Play className="w-8 h-8 fill-white ml-1" />}
             </button>
 
-            <div className="flex items-center gap-1 text-xs font-sans text-[#8C5A66]/70">
-              <Music className="w-4 h-4 text-[#C77D8A]" />
+            <div className="flex items-center gap-1.5 text-xs font-sans text-[#8C5A66]/80 font-medium">
+              <Music className={`w-4 h-4 text-[#C77D8A] ${isPlaying ? 'animate-bounce' : ''}`} />
               <span>{isPlaying ? 'Playing' : 'Paused'}</span>
             </div>
           </div>
