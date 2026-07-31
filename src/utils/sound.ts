@@ -1,9 +1,10 @@
-// Automatic Background Audio Manager for "Apocalypse - Cigarettes After Sex"
+// Automatic Background Audio Manager for "Apocalypse - Cigarettes After Sex" & Subtle Paper Sound Effects
 
 type AudioListener = (isPlaying: boolean, isMuted: boolean, progress: number) => void;
 
 class SoundManager {
   private audio: HTMLAudioElement | null = null;
+  private audioCtx: AudioContext | null = null;
   private isPlayingState: boolean = false;
   private listeners: Set<AudioListener> = new Set();
 
@@ -97,10 +98,53 @@ class SoundManager {
 
   public seek(_percentage: number) {}
 
+  // Soft pencil/fountain pen scratch sound on paper for typing animation
+  public playWritingScratch() {
+    try {
+      if (typeof window === 'undefined') return;
+      if (!this.audioCtx) {
+        const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        this.audioCtx = new AudioCtx();
+      }
+      if (this.audioCtx.state === 'suspended') {
+        this.audioCtx.resume();
+      }
+
+      const bufferSize = Math.floor(this.audioCtx.sampleRate * 0.035); // 35ms burst
+      const buffer = this.audioCtx.createBuffer(1, bufferSize, this.audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.4));
+      }
+
+      const noise = this.audioCtx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.audioCtx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.value = 2200 + Math.random() * 400; // Paper friction frequency
+      filter.Q.value = 2.5;
+
+      const gain = this.audioCtx.createGain();
+      gain.gain.setValueAtTime(0.04, this.audioCtx.currentTime); // Very subtle pencil whisper
+      gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.035);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.audioCtx.destination);
+
+      noise.start();
+    } catch {
+      // AudioContext unavailable or blocked
+    }
+  }
+
   public playSealPop() {}
   public playPaperUnfold() {}
   public playChime(_freq?: number) {}
-  public playClick() {}
+  public playClick() {
+    this.playWritingScratch();
+  }
   public startAmbientMusic() {
     this.playBgMusic();
   }

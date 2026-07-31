@@ -1,21 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { soundFx } from '../utils/sound';
-import { Disc, Music, Heart } from 'lucide-react';
+import { Disc, Music, Heart, Sparkles } from 'lucide-react';
 
 interface CassettePlayerProps {
-  songTitle: string;
-  artist: string;
-  albumArt: string;
-  lyrics: string[];
+  song: {
+    title: string;
+    artist: string;
+    albumArt: string;
+    audioUrl?: string;
+    lyrics: string[];
+  };
 }
 
-export const CassettePlayer: React.FC<CassettePlayerProps> = ({
-  songTitle,
-  artist,
-  albumArt,
-  lyrics,
-}) => {
+export const CassettePlayer: React.FC<CassettePlayerProps> = ({ song }) => {
   const [progress, setProgress] = useState(soundFx.getProgress());
   const [currentLyricIdx, setCurrentLyricIdx] = useState(0);
 
@@ -29,30 +27,35 @@ export const CassettePlayer: React.FC<CassettePlayerProps> = ({
   // Cycle lyrics carousel automatically
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentLyricIdx((prev) => (prev + 1) % (lyrics.length || 1));
+      setCurrentLyricIdx((prev) => (prev + 1) % (song.lyrics?.length || 1));
     }, 4500);
 
     return () => clearInterval(interval);
-  }, [lyrics.length]);
+  }, [song.lyrics?.length]);
 
   return (
-    <section id="our-song" className="relative min-h-screen py-24 px-4 bg-gradient-to-b from-[#FADADD]/20 via-[#FDF5F4] to-[#F6E6E8] paper-grain flex flex-col justify-center items-center">
-      <div className="max-w-4xl w-full mx-auto">
+    <section id="our-song" className="relative py-24 px-4 bg-gradient-to-b from-[#FAF0EE] via-[#FDF5F4] to-[#F6E6E8] paper-grain flex flex-col justify-center items-center overflow-hidden">
+      
+      {/* Background Decorative Sparkle Glow */}
+      <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#C77D8A_1.5px,transparent_1.5px)] [background-size:32px_32px]" />
+
+      <div className="max-w-4xl w-full mx-auto relative z-10">
         
         {/* Section Header */}
         <div className="text-center mb-12">
-          <span className="px-4 py-1.5 text-xs font-sans tracking-[0.3em] uppercase text-[#C77D8A] bg-[#FAF0EE] border border-[#E8B7C0]/50 rounded-full shadow-sm">
-            Chapter V
+          <span className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-sans tracking-[0.3em] uppercase text-[#C77D8A] bg-[#FAF0EE] border border-[#E8B7C0]/50 rounded-full shadow-sm mb-2">
+            <Sparkles className="w-3.5 h-3.5 text-[#C77D8A]" />
+            Chapter II
           </span>
-          <h2 className="font-playfair text-4xl md:text-5xl text-[#8C5A66] font-bold mt-3 mb-2">
-            Our Melody
+          <h2 className="font-playfair text-4xl sm:text-5xl text-[#8C5A66] font-bold mt-2 mb-2">
+            Our Song
           </h2>
           <p className="font-cormorant italic text-xl md:text-2xl text-[#8C5A66]/80 max-w-md mx-auto">
-            The song that plays softly in the background of our love story.
+            Playing softly in the background of our love story.
           </p>
         </div>
 
-        {/* Vintage Cassette Player Card */}
+        {/* Vintage Cassette & Vinyl Player Card */}
         <div className="relative w-full max-w-xl bg-[#FAF0EE] rounded-3xl p-6 sm:p-10 polaroid-shadow border-2 border-[#E8B7C0] paper-grain mx-auto">
           
           {/* Cassette Tape Window & Reels */}
@@ -86,19 +89,32 @@ export const CassettePlayer: React.FC<CassettePlayerProps> = ({
             </motion.div>
           </div>
 
-          {/* Song Info & Album Art */}
+          {/* Song Info & Vinyl Record Spinning Album Art */}
           <div className="flex flex-col sm:flex-row items-center gap-6 mb-6">
             
-            {/* Album Art with Disk Spinner */}
-            <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden border-2 border-[#E8B7C0] shadow-md shrink-0">
-              <img
-                src={albumArt}
-                alt={songTitle}
-                className="w-full h-full object-cover animate-spin-slow"
-              />
-              <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
-                <Disc className="w-6 h-6 text-white/80" />
-              </div>
+            {/* Album Art with Vinyl Disc Spinner */}
+            <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-[#8C5A66] bg-[#111111] p-1 shadow-xl shrink-0 overflow-hidden">
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                className="w-full h-full rounded-full relative overflow-hidden flex items-center justify-center bg-[radial-gradient(circle,_#333_20%,_#111_80%)]"
+              >
+                {/* Vinyl Grooves */}
+                <div className="absolute inset-2 rounded-full border border-white/10" />
+                <div className="absolute inset-4 rounded-full border border-white/10" />
+                
+                {/* Center Label Art */}
+                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-[#FAF0EE] shadow-md relative">
+                  <img
+                    src={song.albumArt}
+                    alt={song.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/10 flex items-center justify-center">
+                    <Disc className="w-4 h-4 text-white/90" />
+                  </div>
+                </div>
+              </motion.div>
             </div>
 
             {/* Title & Artist */}
@@ -110,10 +126,10 @@ export const CassettePlayer: React.FC<CassettePlayerProps> = ({
                 <Music className="w-3.5 h-3.5 text-[#C77D8A] animate-bounce" />
               </div>
               <h3 className="font-playfair text-2xl md:text-3xl font-bold text-[#8C5A66] mt-1">
-                {songTitle}
+                {song.title}
               </h3>
               <p className="font-cormorant text-xl text-[#8C5A66]/80 font-medium">
-                {artist}
+                {song.artist}
               </p>
             </div>
           </div>
@@ -132,10 +148,10 @@ export const CassettePlayer: React.FC<CassettePlayerProps> = ({
           </div>
 
           {/* Lyrics Carousel Display */}
-          {lyrics && lyrics.length > 0 && (
+          {song.lyrics && song.lyrics.length > 0 && (
             <div className="mt-8 pt-6 border-t border-[#E8B7C0]/40 text-center min-h-[60px] flex items-center justify-center">
               <p className="font-cormorant italic text-xl md:text-2xl text-[#C77D8A]">
-                "{lyrics[currentLyricIdx]}"
+                "{song.lyrics[currentLyricIdx]}"
               </p>
             </div>
           )}

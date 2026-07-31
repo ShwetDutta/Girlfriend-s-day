@@ -50,7 +50,21 @@ export interface ScrapbookThing {
 export interface HiddenLoveNote {
   id: string;
   message: string;
-  position: { x: number; y: number }; // Percentage position on page
+  position: { x: number; y: number };
+}
+
+export interface ScrapbookMemory {
+  id: string;
+  title: string;
+  date: string;
+  caption: string;
+  imageUrl: string;
+  rotation: number;
+  frameStyle?: 'polaroid' | 'film' | 'torn-paper' | 'pressed-flower' | 'vintage-border';
+  tapeColor?: 'pink' | 'lavender' | 'gold' | 'mint' | 'rose';
+  sticker?: string;
+  scratchMemo?: string;
+  location?: string;
 }
 
 export interface LoveStoryConfig {
@@ -69,20 +83,11 @@ export interface LoveStoryConfig {
     title: string;
     artist: string;
     albumArt: string;
-    audioUrl?: string;
+    audioUrl: string;
     lyrics: string[];
   };
-  milestones: Milestone[];
-  polaroids: PolaroidPhoto[];
-  reasonsNotes: LoveReasonNote[];
-  deskItems: DeskItem[];
-  littleThings: ScrapbookThing[];
-  hiddenNotes: HiddenLoveNote[];
-  reasonsWeWork: {
-    title: string;
-    subheading: string;
-    bullets: { label: string; text: string; sticker: string }[];
-  };
+  scrapbookMemories: ScrapbookMemory[];
+  hiddenNotes?: HiddenLoveNote[];
   nightSky: {
     heading: string;
     subheading: string;
@@ -95,19 +100,33 @@ export interface LoveStoryConfig {
 
 export const initialLoveStory: LoveStoryConfig = {
   girlfriendName: "Hafsa",
-  senderName: "With All My Heart",
+  senderName: "Shwet",
   occasion: "National Girlfriend's Day",
   landingTitle: "For Hafsa ❤️",
   landingSubtitle: "A little corner of the internet made just for you.",
   letter: {
     salutation: "My Dearest Hafsa,",
     bodyParagraphs: [
-      "Happy National Girlfriend's Day ❤️\n\nI wanted to make you something that wasn't bought from a store or copied from somewhere else.\n\nEvery little detail here was made with you in mind.\n\nEvery animation.\nEvery flower.\nEvery memory.\nEvery word.\n\nBecause you deserve something as special as you are.",
-      "Thank you for making ordinary days feel extraordinary.\n\nThank you for every smile you've given me.\n\nFor every laugh.\n\nFor every conversation that made my day better.",
-      "I don't know what the future has planned for us, but I know that if you're in it, it'll always be worth looking forward to.\n\nThis little website isn't enough to express how much you mean to me...\n\nBut I hope it reminds you of one thing—\n\nYou'll always have a special place in my heart."
+      "Happy National Girlfriend's Day, my love. ❤️",
+      "Before you read anything else, I just want you to know that this little website exists because of you.",
+      "I could have bought you a gift or written you a simple message, but I wanted to make something that would always be here—a tiny place on the internet that reminds you how much you mean to me.",
+      "Every animation, every flower, every little detail you see was chosen while thinking about you. It may not be perfect, but neither was the process. There were bugs, late nights, countless changes, and moments where I wanted to start over. But every minute felt worth it because I was making it for the most special person in my life.",
+      "Thank you for being my peace on difficult days, for making ordinary moments feel special, and for giving me so many reasons to smile without even trying.",
+      "I don't know what life has planned for us, but I do know one thing—I want to keep making memories with you. The kind we'll laugh about years from now, the kind we'll randomly remember and smile at, and the kind that make life beautiful.",
+      "Whenever you feel happy, I hope I'm one of the reasons.",
+      "Whenever you feel sad, I hope you remember that you'll never have to go through it alone.",
+      "You deserve to be loved, appreciated, and reminded every single day of how amazing you are. I may not always find the perfect words, but I'll always try to show you.",
+      "This website isn't just a gift for today.",
+      "It's a reminder that someone out there thinks you're incredibly precious.",
+      "Someone who smiles when your name appears on their phone.",
+      "Someone who quietly thanks the universe for bringing you into their life.",
+      "That someone is me.",
+      "So, Happy National Girlfriend's Day, Hafsa.",
+      "Thank you for being you.",
+      "I love you today, tomorrow, and every day after that."
     ],
-    closing: "Happy National Girlfriend's Day, Hafsa.",
-    signature: "❤️"
+    closing: "Forever yours,",
+    signature: "Shwet ❤️"
   },
   song: {
     title: "Apocalypse",
@@ -122,372 +141,229 @@ export const initialLoveStory: LoveStoryConfig = {
       "When I look at you, my world is at peace..."
     ]
   },
-  milestones: [
+  scrapbookMemories: [
     {
       id: "m1",
-      date: "Fill in Date",
-      title: "❤️ The day we first met",
-      description: "A moment etched in my memory forever—the very first instant our paths crossed and my world became so much brighter.",
-      location: "Where It Began",
-      tag: "Unforgettable",
-      imageUrl: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=600&q=80"
+      title: "That Bright Smile",
+      date: "Memory #1",
+      caption: "You don't even have to try—you somehow manage to look effortlessly adorable without even realizing it. I could look at this picture all day.",
+      imageUrl: "/photos/1000071188.jpg",
+      rotation: -3,
+      frameStyle: "polaroid",
+      tapeColor: "pink",
+      sticker: "✨",
+      scratchMemo: "Cutest face ever! 💕",
+      location: "Sunny Afternoons"
     },
     {
       id: "m2",
-      date: "Fill in Date",
-      title: "❤️ Our first conversation",
-      description: "Hours flew by like minutes. Listening to you speak, laughing together, and knowing right then that you were truly someone extraordinary.",
-      location: "First Long Chat",
-      tag: "Spark",
-      imageUrl: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80"
+      title: "Caught Off Guard",
+      date: "Memory #2",
+      caption: "I still laugh every time I see this one. You somehow managed to look both completely surprised and absurdly cute at the exact same time.",
+      imageUrl: "/photos/1000071189.jpg",
+      rotation: 2,
+      frameStyle: "torn-paper",
+      tapeColor: "rose",
+      sticker: "🌸",
+      scratchMemo: "Unfiltered reaction 📸",
+      location: "Unexpected Moments"
     },
     {
       id: "m3",
-      date: "Fill in Date",
-      title: "❤️ The first time you made me smile",
-      description: "That genuine, radiant laugh of yours caught me completely off guard and instantly warmed my heart.",
-      location: "Sweet Memories",
-      tag: "Pure Joy",
-      imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80"
+      title: "My Favorite View",
+      date: "Memory #3",
+      caption: "I took this while you weren't paying attention, and it turned out to be one of my absolute favorites. You look so soft and calm here.",
+      imageUrl: "/photos/1000071190.jpg",
+      rotation: -2,
+      frameStyle: "pressed-flower",
+      tapeColor: "lavender",
+      sticker: "🌿",
+      scratchMemo: "Pure natural grace ✨",
+      location: "Quiet Evenings"
     },
     {
       id: "m4",
-      date: "Fill in Date",
-      title: "❤️ The moment I realized I liked you",
-      description: "In the middle of a simple conversation, it clicked—I found myself looking forward to every message and every moment with you.",
-      location: "Special Realization",
-      tag: "Butterflies",
-      imageUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80"
+      title: "The Cutest Look",
+      date: "Memory #4",
+      caption: "I don't know if you realize it, but you have the most endearing expressions when you're thinking about something. I love every little detail of this.",
+      imageUrl: "/photos/1000071191.jpg",
+      rotation: 3,
+      frameStyle: "film",
+      tapeColor: "gold",
+      sticker: "🎀",
+      scratchMemo: "Lost in thought 🌸",
+      location: "Our Favorite Spot"
     },
     {
       id: "m5",
-      date: "Today & Always",
-      title: "❤️ Today - Celebrating Hafsa",
-      description: "National Girlfriend's Day! Celebrating the incredible girl who brings so much sweetness, beauty, and happiness into my life.",
-      location: "Right Here, Right Now",
-      tag: "For You Hafsa",
-      imageUrl: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80"
-    }
-  ],
-  polaroids: [
-    {
-      id: "p1",
-      title: "Our happiest day",
-      date: "Cherished Moment",
-      caption: "A day filled with pure laughter, sunshine, and endless happiness with you, Hafsa.",
-      imageUrl: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80",
-      rotation: -3,
-      scratchMemo: "You looked so beautiful here! ✨"
+      title: "Little Drama Queen",
+      date: "Memory #5",
+      caption: "This expression deserves its own art museum. Only you can pull off a silly pose and still look irresistibly charming.",
+      imageUrl: "/photos/1000071192.jpg",
+      rotation: -4,
+      frameStyle: "vintage-border",
+      tapeColor: "mint",
+      sticker: "🎭",
+      scratchMemo: "10/10 performance! 😂",
+      location: "Random Fun Days"
     },
     {
-      id: "p2",
-      title: "That unforgettable laugh",
-      date: "Sweet Memories",
-      caption: "Your laugh is my absolute favorite sound in the whole world.",
-      imageUrl: "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=600&q=80",
+      id: "m6",
+      title: "Pure Joy",
+      date: "Memory #6",
+      caption: "This is one of those pictures that instantly makes my day better. Look at how bright your laugh is here—it's impossible not to smile back.",
+      imageUrl: "/photos/1000071193.jpg",
       rotation: 2,
-      scratchMemo: "Your smile is contagious 💖"
+      frameStyle: "polaroid",
+      tapeColor: "pink",
+      sticker: "😁",
+      scratchMemo: "Contagious giggles!",
+      location: "Weekend Outings"
     },
     {
-      id: "p3",
-      title: "A random moment I'll always remember",
-      date: "Unscripted Joy",
-      caption: "Proof that simple, quiet moments with you are the ones that mean the absolute most.",
-      imageUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80",
-      rotation: -2,
-      scratchMemo: "My favorite kind of afternoon 🌧️"
+      id: "m7",
+      title: "Those Pretty Eyes",
+      date: "Memory #7",
+      caption: "There's a gentle kind of magic in this picture. This is exactly how I see you every single day—sweet, glowing, and utterly breathtaking.",
+      imageUrl: "/photos/1000071194.jpg",
+      rotation: -1,
+      frameStyle: "pressed-flower",
+      tapeColor: "rose",
+      sticker: "🌹",
+      scratchMemo: "Simply stunning",
+      location: "Golden Hour"
     },
     {
-      id: "p4",
-      title: "One of my favorite pictures of you",
-      date: "Radiant Hafsa",
-      caption: "Every single time I see this picture, my heart skips a beat.",
-      imageUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80",
+      id: "m8",
+      title: "Silly & Sweet",
+      date: "Memory #8",
+      caption: "I don't even remember what we were laughing about here, but I remember how happy I felt just being right there beside you.",
+      imageUrl: "/photos/1000071195.jpg",
       rotation: 4,
-      scratchMemo: "You shine so brightly 🌸"
+      frameStyle: "torn-paper",
+      tapeColor: "lavender",
+      sticker: "🤫",
+      scratchMemo: "Inside jokes forever",
+      location: "Late Night Talks"
     },
     {
-      id: "p5",
-      title: "The photo that always makes me smile",
-      date: "Instant Joy",
-      caption: "No matter how tough a day gets, looking at this instantly makes everything better.",
-      imageUrl: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80",
-      rotation: -4,
-      scratchMemo: "Your warmth is unmatched ✨"
-    },
-    {
-      id: "p6",
-      title: "A beautiful memory",
-      date: "Forever In My Heart",
-      caption: "Holding onto this precious moment forever.",
-      imageUrl: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80",
-      rotation: 3,
-      scratchMemo: "I cherish you, Hafsa ❤️"
-    }
-  ],
-  reasonsNotes: [
-    {
-      id: "r1",
-      title: "Your smile",
-      noteText: "It lights up every room and turns my worst days into pure warmth.",
-      rotation: -4,
-      color: "#FADADD"
-    },
-    {
-      id: "r2",
-      title: "Your laugh",
-      noteText: "The sweetest, most comforting sound that I could listen to on repeat forever.",
-      rotation: 3,
-      color: "#F6E6E8"
-    },
-    {
-      id: "r3",
-      title: "Your kindness",
-      noteText: "The gentle, genuine empathy you share with everyone around you.",
-      rotation: -2,
-      color: "#E8B7C0"
-    },
-    {
-      id: "r4",
-      title: "The way you care",
-      noteText: "How deeply and thoughtfully you pay attention to the smallest details.",
-      rotation: 5,
-      color: "#FADADD"
-    },
-    {
-      id: "r5",
-      title: "Your beautiful eyes",
-      noteText: "Full of sincerity, kindness, and that adorable sparkle when you're happy.",
+      id: "m9",
+      title: "My Sunshine",
+      date: "Memory #9",
+      caption: "You have this unbelievable way of lighting up the entire room without even saying a word. This picture captures that energy perfectly.",
+      imageUrl: "/photos/1000071196.jpg",
       rotation: -3,
-      color: "#F6E6E8"
+      frameStyle: "vintage-border",
+      tapeColor: "gold",
+      sticker: "☀️",
+      scratchMemo: "Radiant vibes",
+      location: "Bright Mornings"
     },
     {
-      id: "r6",
-      title: "Your voice",
-      noteText: "Calming, familiar, and instantly bringing a sense of peace whenever you speak.",
+      id: "m10",
+      title: "Always Adorable",
+      date: "Memory #10",
+      caption: "You've always had the sweetest smile, and I hope you never stop smiling like this. Seeing you happy is my favorite feeling in the world.",
+      imageUrl: "/photos/1000071197.jpg",
       rotation: 2,
-      color: "#E8B7C0"
+      frameStyle: "polaroid",
+      tapeColor: "mint",
+      sticker: "🌷",
+      scratchMemo: "Never change! 💕",
+      location: "Timeless Moments"
     },
     {
-      id: "r7",
-      title: "Your honesty",
-      noteText: "Your genuine heart and how true you remain to who you are.",
-      rotation: -4,
-      color: "#FADADD"
-    },
-    {
-      id: "r8",
-      title: "Your patience",
-      noteText: "The gentle, understanding grace you give even in busy or stressful times.",
-      rotation: 4,
-      color: "#F6E6E8"
-    },
-    {
-      id: "r9",
-      title: "Your personality",
-      noteText: "Witty, sweet, uniquely charming, and completely one of a kind.",
+      id: "m11",
+      title: "A Candid Moment",
+      date: "Memory #11",
+      caption: "You didn't know I was taking a picture, which makes it ten times better. Unscripted, natural, and genuinely pretty.",
+      imageUrl: "/photos/1000071198.jpg",
       rotation: -2,
-      color: "#E8B7C0"
+      frameStyle: "film",
+      tapeColor: "pink",
+      sticker: "📱",
+      scratchMemo: "Sneaky photo win!",
+      location: "Coffee Break"
     },
     {
-      id: "r10",
-      title: "The comfort I feel around you",
-      noteText: "Being with you feels like home—peaceful, natural, and utterly safe.",
+      id: "m12",
+      title: "My Pretty Girl",
+      date: "Memory #12",
+      caption: "I randomly opened my gallery the other day and paused at this exact photo. You look so effortlessly beautiful here, Hafsa.",
+      imageUrl: "/photos/1000071201.jpg",
       rotation: 3,
-      color: "#FADADD"
+      frameStyle: "pressed-flower",
+      tapeColor: "rose",
+      sticker: "💖",
+      scratchMemo: "Saved in my favorites",
+      location: "Everyday Magic"
     },
     {
-      id: "r11",
-      title: "How you make bad days better",
-      noteText: "Just a single message or smile from you turns everything around.",
-      rotation: -5,
-      color: "#F6E6E8"
+      id: "m13",
+      title: "Master of Goofy Faces",
+      date: "Memory #13",
+      caption: "I don't know what was happening here... but I love it. Never lose this goofy side of yours, it's one of my favorite things about you.",
+      imageUrl: "/photos/1000071202.jpg",
+      rotation: -3,
+      frameStyle: "vintage-border",
+      tapeColor: "lavender",
+      sticker: "🤪",
+      scratchMemo: "Top-tier goofiness!",
+      location: "Chaos & Laughter"
     },
     {
-      id: "r12",
-      title: "Simply because you're Hafsa",
-      noteText: "You don't have to do anything special—just being yourself is more than enough.",
+      id: "m14",
+      title: "Just You Being You",
+      date: "Memory #14",
+      caption: "No poses, no filters—just you being your sweet, cozy self. This picture reminds me why I fell for you in the first place.",
+      imageUrl: "/photos/1000071203.jpg",
       rotation: 2,
-      color: "#E8B7C0"
+      frameStyle: "polaroid",
+      tapeColor: "gold",
+      sticker: "☕",
+      scratchMemo: "100% genuine you",
+      location: "Cozy Afternoons"
+    },
+    {
+      id: "m15",
+      title: "Side By Side",
+      date: "Memory #15",
+      caption: "My favorite picture isn't the most formal or polished one... it's simply the one where I'm lucky enough to be standing right beside you.",
+      imageUrl: "/photos/1000071204.jpg",
+      rotation: -2,
+      frameStyle: "torn-paper",
+      tapeColor: "pink",
+      sticker: "👫",
+      scratchMemo: "Us against the world",
+      location: "Together Always"
+    },
+    {
+      id: "m16",
+      title: "Happy Girlfriend's Day",
+      date: "Memory #16",
+      caption: "Out of all the memories in my phone, you are my absolute favorite story. I love you today, tomorrow, and every day after that, Hafsa.",
+      imageUrl: "/photos/1000071205.jpg",
+      rotation: 1,
+      frameStyle: "pressed-flower",
+      tapeColor: "rose",
+      sticker: "👑",
+      scratchMemo: "Forever Yours, Shwet ❤️",
+      location: "To Infinite Memories"
     }
   ],
-  deskItems: [
-    {
-      id: "bouquet",
-      name: "Fresh Floral Bouquet",
-      iconName: "Flower",
-      badge: "For Hafsa",
-      description: "A delicate bouquet of soft pink roses and fragrant garden blooms.",
-      details: "A small symbol of how much brightness you bring into my life every single day.",
-      x: 18,
-      y: 20,
-      rotation: -8,
-      imageUrl: "https://images.unsplash.com/photo-1526047932273-341f2a7631f9?auto=format&fit=crop&w=600&q=80"
-    },
-    {
-      id: "letter",
-      name: "Handwritten Letters",
-      iconName: "Mail",
-      badge: "Love Note",
-      description: "Stationery penned with thoughts of you.",
-      details: "Every sentence written with care, reminding you how cherished you are.",
-      x: 48,
-      y: 15,
-      rotation: 5,
-      imageUrl: "https://images.unsplash.com/photo-1516962215378-7fa2e137ae93?auto=format&fit=crop&w=600&q=80"
-    },
-    {
-      id: "tickets",
-      name: "Favorite Moments",
-      iconName: "Ticket",
-      badge: "Keepsake",
-      description: "Memories collected along the way.",
-      details: "Little tokens celebrating the laughter and conversations we share.",
-      x: 75,
-      y: 25,
-      rotation: -12,
-      imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=600&q=80"
-    },
-    {
-      id: "coffee",
-      name: "Warm Mug",
-      iconName: "Coffee",
-      badge: "Cozy Time",
-      description: "A steamy cup for long, sweet conversations.",
-      details: "Nothing beats relaxing and chatting about everything under the sun with you.",
-      x: 20,
-      y: 65,
-      rotation: 10,
-      imageUrl: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=600&q=80"
-    },
-    {
-      id: "map",
-      name: "Dream Travel Map",
-      iconName: "MapPin",
-      badge: "Adventures",
-      description: "Places waiting for us to explore together.",
-      details: "All the future journeys and scenic views waiting ahead.",
-      x: 52,
-      y: 60,
-      rotation: -4,
-      imageUrl: "https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?auto=format&fit=crop&w=600&q=80"
-    },
-    {
-      id: "camera",
-      name: "Film Camera",
-      iconName: "Camera",
-      badge: "Snapshots",
-      description: "Capturing moments of Hafsa's smile.",
-      details: "Preserving every precious memory so we can look back with warmth.",
-      x: 82,
-      y: 62,
-      rotation: 8,
-      imageUrl: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?auto=format&fit=crop&w=600&q=80"
-    }
-  ],
-  littleThings: [
-    {
-      id: "lt1",
-      category: "Favorite Nickname",
-      frontTitle: "Favorite Nickname For You",
-      backDescription: "My special title for you that always brings a gentle smile to your face.",
-      sticker: "✨"
-    },
-    {
-      id: "lt2",
-      category: "Cutest Habit",
-      frontTitle: "Your Cutest Habit",
-      backDescription: "The adorable way you get excited when talking about things you love!",
-      sticker: "🌸"
-    },
-    {
-      id: "lt3",
-      category: "Dream Destination",
-      frontTitle: "Your Dream Destination",
-      backDescription: "A peaceful, breathtaking place where we can watch the sunset together.",
-      sticker: "✈️"
-    },
-    {
-      id: "lt4",
-      category: "Future List",
-      frontTitle: "Things I Want Us To Do Together",
-      backDescription: "Stargazing, cozy coffee dates, late-night talks, and endless adventures.",
-      sticker: "💖"
-    },
-    {
-      id: "lt5",
-      category: "Music",
-      frontTitle: "Songs That Remind Me Of You",
-      backDescription: "Soft, romantic melodies that play on repeat in my mind whenever I think of Hafsa.",
-      sticker: "🎶"
-    },
-    {
-      id: "lt6",
-      category: "Watchlist",
-      frontTitle: "Movies We Should Watch Together",
-      backDescription: "Wrapped under a warm blanket with popcorn and hot cocoa on a quiet night.",
-      sticker: "🎬"
-    },
-    {
-      id: "lt7",
-      category: "Night Chats",
-      frontTitle: "Late-Night Conversations",
-      backDescription: "Talking about life, dreams, and silly thoughts until the early hours of morning.",
-      sticker: "🌙"
-    },
-    {
-      id: "lt8",
-      category: "Adventures",
-      frontTitle: "Future Adventures",
-      backDescription: "All the unwritten chapters waiting for us in the future.",
-      sticker: "🌟"
-    }
-  ],
-  hiddenNotes: [
-    { id: "hn1", message: "I miss you.", position: { x: 12, y: 18 } },
-    { id: "hn2", message: "You make my day better.", position: { x: 85, y: 22 } },
-    { id: "hn3", message: "You have the prettiest smile.", position: { x: 8, y: 45 } },
-    { id: "hn4", message: "I'm lucky to have you.", position: { x: 88, y: 55 } },
-    { id: "hn5", message: "I'll always choose you.", position: { x: 15, y: 72 } },
-    { id: "hn6", message: "You deserve the world.", position: { x: 82, y: 80 } },
-    { id: "hn7", message: "You're beautiful.", position: { x: 48, y: 35 } },
-    { id: "hn8", message: "I hope this made you smile.", position: { x: 50, y: 88 } }
-  ],
-  reasonsWeWork: {
-    title: "Reasons We Work",
-    subheading: "A handcrafted scrapbook collage celebrating us.",
-    bullets: [
-      {
-        label: "Natural Connection",
-        text: "Conversations flow effortlessly, and even silent moments feel peaceful and comforting.",
-        sticker: "🌸"
-      },
-      {
-        label: "Best Friends",
-        text: "Being silly, sharing inside jokes, and being entirely true to ourselves.",
-        sticker: "💖"
-      },
-      {
-        label: "Mutual Care",
-        text: "Always supporting each other's happiness and celebrating every little win.",
-        sticker: "⭐"
-      },
-      {
-        label: "Infinite Comfort",
-        text: "Knowing that around you, Hafsa, I can be 100% myself without hesitation.",
-        sticker: "✨"
-      }
-    ]
-  },
   nightSky: {
-    heading: "I'd choose you. Again. Tomorrow. Next year. In every lifetime.",
-    subheading: "Thank you for being you.",
-    buttonText: "One More Surprise ✨",
+    heading: "Make A Wish, Hafsa ✨",
+    subheading: "Under this sky full of stars, every single one shines for you.",
+    buttonText: "Click For A Surprise ❤️",
     surpriseLines: [
-      "If I had one wish...",
-      "I'd wish to experience every lifetime with you."
+      "I love the way you laugh.",
+      "I love how kind your heart is.",
+      "I love how you make ordinary days feel so special.",
+      "I love listening to you speak.",
+      "I love every little memory we share.",
+      "And most of all, I love you."
     ],
-    loveMessage: "I love you, Hafsa ❤️",
-    foreverPrompt: "Forever?"
+    loveMessage: "You are my favorite part of every day. Happy National Girlfriend's Day, my love!",
+    foreverPrompt: "To many more memories together ❤️"
   }
 };

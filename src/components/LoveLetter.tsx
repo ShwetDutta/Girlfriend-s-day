@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'motion/react';
-import { soundFx } from '../utils/sound';
 import { Heart, ChevronDown, Sparkles } from 'lucide-react';
 
 interface LoveLetterProps {
@@ -19,36 +18,9 @@ export const LoveLetter: React.FC<LoveLetterProps> = ({
   closing,
   signature,
   girlfriendName,
-  senderName,
+  senderName: _senderName,
   onScrollToStory,
 }) => {
-  // Typewriter effect logic
-  const fullText = paragraphs.join("\n\n");
-  const [displayedText, setDisplayedText] = useState("");
-  const [isTypingComplete, setIsTypingComplete] = useState(false);
-
-  useEffect(() => {
-    setDisplayedText("");
-    setIsTypingComplete(false);
-    let index = 0;
-    const speed = 25; // ms per char
-
-    const timer = setInterval(() => {
-      if (index < fullText.length) {
-        setDisplayedText((prev) => prev + fullText.charAt(index));
-        index++;
-        if (index % 12 === 0) {
-          soundFx.playClick();
-        }
-      } else {
-        setIsTypingComplete(true);
-        clearInterval(timer);
-      }
-    }, speed);
-
-    return () => clearInterval(timer);
-  }, [fullText]);
-
   return (
     <div className="relative min-h-screen w-full flex flex-col items-center justify-center px-4 py-16 paper-grain bg-gradient-to-b from-[#FDF5F4] via-[#F6E6E8] to-[#FDF5F4]">
       
@@ -56,13 +28,13 @@ export const LoveLetter: React.FC<LoveLetterProps> = ({
       <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#C77D8A_1px,transparent_1px)] [background-size:24px_24px]" />
 
       <motion.div
-        initial={{ opacity: 0, y: 60, rotateX: -15 }}
-        animate={{ opacity: 1, y: 0, rotateX: 0 }}
-        transition={{ duration: 1.2, ease: "easeOut" }}
-        className="relative w-full max-w-2xl bg-[#FAF0EE] rounded-xl p-8 md:p-14 shadow-2xl border-2 border-[#E8B7C0]/50 paper-grain animate-sway my-auto"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="relative w-full max-w-2xl bg-[#FAF0EE] rounded-xl p-8 md:p-14 shadow-2xl border-2 border-[#E8B7C0]/50 paper-grain my-auto"
       >
         {/* Decorative Washi Tape at Top */}
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-32 h-7 washi-tape flex items-center justify-center text-xs font-handwriting text-[#8C5A66]">
+        <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-36 h-7 washi-tape flex items-center justify-center text-xs font-handwriting text-[#8C5A66]">
           National Girlfriend's Day
         </div>
 
@@ -83,17 +55,18 @@ export const LoveLetter: React.FC<LoveLetterProps> = ({
           {salutation}
         </h3>
 
-        {/* Letter Body with Typewriter Effect */}
-        <div className="font-cormorant text-lg md:text-xl text-[#8C5A66] leading-relaxed whitespace-pre-line min-h-[160px] tracking-wide">
-          {displayedText}
-          {!isTypingComplete && (
-            <span className="inline-block w-2 h-5 bg-[#C77D8A] ml-1 animate-pulse" />
-          )}
+        {/* Letter Body with Handwritten Style, Readable Line Spacing & Steady Display */}
+        <div className="font-caveat text-2xl md:text-3xl text-[#8C5A66] space-y-6 tracking-wide">
+          {paragraphs.map((paragraph, idx) => (
+            <p key={idx} className="leading-relaxed md:leading-loose">
+              {paragraph}
+            </p>
+          ))}
         </div>
 
         {/* Closing & Signature */}
-        <div className="mt-8 pt-6 border-t border-[#E8B7C0]/30 flex flex-col items-end">
-          <p className="font-cormorant italic text-lg text-[#8C5A66]/80">{closing}</p>
+        <div className="mt-10 pt-6 border-t border-[#E8B7C0]/30 flex flex-col items-end">
+          <p className="font-caveat text-2xl text-[#8C5A66]/90">{closing}</p>
           <p className="font-handwriting text-3xl md:text-4xl text-[#C77D8A] mt-1 font-bold">
             {signature}
           </p>
@@ -109,9 +82,9 @@ export const LoveLetter: React.FC<LoveLetterProps> = ({
 
       {/* Down Arrow / Scroll Prompt */}
       <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
+        initial={{ opacity: 0, y: 15 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.8 }}
         className="mt-12 flex flex-col items-center cursor-pointer group"
         onClick={onScrollToStory}
       >

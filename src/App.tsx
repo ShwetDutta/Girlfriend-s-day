@@ -12,16 +12,11 @@ import { FlyingButterfly } from './components/FlyingButterfly';
 import { HiddenLoveNotes } from './components/HiddenLoveNotes';
 import { EnvelopeIntro } from './components/EnvelopeIntro';
 import { LoveLetter } from './components/LoveLetter';
-import { StoryTimeline } from './components/StoryTimeline';
-import { PolaroidGallery } from './components/PolaroidGallery';
-import { ReasonsNotes } from './components/ReasonsNotes';
-import { MemoryDesk } from './components/MemoryDesk';
+import { ScrapbookGallery } from './components/ScrapbookGallery';
 import { CassettePlayer } from './components/CassettePlayer';
-import { LittleThingsScrapbook } from './components/LittleThingsScrapbook';
-import { ReasonsWeWork } from './components/ReasonsWeWork';
 import { NightSkyFinale } from './components/NightSkyFinale';
 
-const LOCAL_STORAGE_KEY = 'national_girlfriends_day_love_story_hafsa_v3';
+const LOCAL_STORAGE_KEY = 'national_girlfriends_day_love_story_hafsa_v5';
 
 export default function App() {
   const [config] = useState<LoveStoryConfig>(() => {
@@ -29,7 +24,7 @@ export default function App() {
       const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.girlfriendName === 'Hafsa') {
+        if (parsed.girlfriendName === 'Hafsa' && parsed.scrapbookMemories) {
           return parsed;
         }
       }
@@ -85,7 +80,7 @@ export default function App() {
       <FlyingButterfly />
 
       {/* Scattered Secret Love Notes */}
-      <HiddenLoveNotes notes={config.hiddenNotes || initialLoveStory.hiddenNotes} />
+      <HiddenLoveNotes notes={initialLoveStory.hiddenNotes || []} />
 
       {!hasOpenedIntro ? (
         /* Intro Scene with Blooming Flowers & Vintage Wax Envelope */
@@ -110,45 +105,17 @@ export default function App() {
             onScrollToStory={() => scrollToSection('our-story')}
           />
 
-          {/* Section 1: Our Story Timeline */}
-          <StoryTimeline
-            milestones={config.milestones}
+          {/* Personalized Interactive Scrapbook Photo Memory Gallery */}
+          <ScrapbookGallery
+            memories={config.scrapbookMemories || initialLoveStory.scrapbookMemories}
           />
 
-          {/* Section 2: Our Favorite Memories (Floating Polaroids & Lightbox) */}
-          <PolaroidGallery
-            polaroids={config.polaroids}
-          />
-
-          {/* Section 3: Reasons I Love You (12 Scattered Notes) */}
-          <ReasonsNotes
-            notes={config.reasonsNotes}
-          />
-
-          {/* Section 4: Interactive Memory Desk */}
-          <MemoryDesk
-            items={config.deskItems}
-          />
-
-          {/* Section 5: Music / Vintage Cassette Player */}
+          {/* Music Section / Premium Vintage Player */}
           <CassettePlayer
-            songTitle={config.song.title}
-            artist={config.song.artist}
-            albumArt={config.song.albumArt}
-            lyrics={config.song.lyrics}
+            song={config.song || initialLoveStory.song}
           />
 
-          {/* Section 6: The Little Things Scrapbook Flip Cards */}
-          <LittleThingsScrapbook
-            items={config.littleThings}
-          />
-
-          {/* Section 7: Reasons We Work Collage */}
-          <ReasonsWeWork
-            data={config.reasonsWeWork}
-          />
-
-          {/* Final Section: Night Sky & Petal Celebration Surprise */}
+          {/* Final Section / Footer: Night Sky & Petal Celebration Surprise */}
           <NightSkyFinale
             heading={config.nightSky.heading}
             subheading={config.nightSky.subheading}
