@@ -19,20 +19,7 @@ import { NightSkyFinale } from './components/NightSkyFinale';
 const LOCAL_STORAGE_KEY = 'national_girlfriends_day_love_story_hafsa_v5';
 
 export default function App() {
-  const [config] = useState<LoveStoryConfig>(() => {
-    try {
-      const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        if (parsed.girlfriendName === 'Hafsa' && parsed.scrapbookMemories) {
-          return parsed;
-        }
-      }
-    } catch (e) {
-      console.error('Failed to parse saved love story', e);
-    }
-    return initialLoveStory;
-  });
+  const config: LoveStoryConfig = initialLoveStory;
 
   const [hasOpenedIntro, setHasOpenedIntro] = useState(false);
 
